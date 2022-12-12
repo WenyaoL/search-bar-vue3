@@ -49,7 +49,7 @@
           </div>
           </div>
         <div class="result-match">
-          <span class="search-result">{{`${highlightIndex + 1} / ${highlightCount}`}}</span>
+          <span class="search-result">{{highlightIndex +' / '+ highlightCount}}</span>
 
           <span class="pre-match" title="Previous Match" @click="previous()">
             <svg class="icon" aria-hidden="true">
@@ -115,15 +115,15 @@ let searchMatches = reactive<{
 let isHighlight = ref(true)
 
 let highlightIndex = computed(()=>{
-  if (searchMatches) {
-      return searchMatches.index
+  if (searchMatches.index || searchMatches.index>=0) {
+      return searchMatches.index+1
   } else {
-      return -1
+      return 0
   }
 })
 
 let highlightCount = computed(()=>{
-  if (searchMatches) {
+  if (searchMatches.result || searchMatches.result>=0) {
       return searchMatches.result.length
   } else {
       return 0
@@ -133,12 +133,15 @@ let highlightCount = computed(()=>{
 watch(()=>props.hidden,(value)=>{
   if(value == true){
     removeHighlightKey(props.highlightClass)
-    searchMatches = {index:-1,result:[]}
+    searchMatches.index = -1 
+    searchMatches.result = []
     searchValue.value = ''
   }
 })
 
 let next = ()=>{
+  console.log("触发next");
+  
   if(searchMatches.result.length <= 0){
     return
   }
@@ -164,7 +167,8 @@ const emit = defineEmits(['update:hidden'])
 let close = ()=>{
   emit('update:hidden',true)
   removeHighlightKey(props.highlightClass)
-  searchMatches = {index:-1,result:[]}
+  searchMatches.index = -1
+  searchMatches.result = []
   searchValue.value = ''
 }
 

@@ -26,5 +26,8 @@ module.exports = defineConfig({
     entry:{
       app:"./dev/main.ts"
     }
+  },
+  css:{
+    extract:false
   }
 })
